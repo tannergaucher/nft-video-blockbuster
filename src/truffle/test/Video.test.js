@@ -36,10 +36,7 @@ contract("Video", (accounts) => {
 
   describe("minting", () => {
     it("rents a video to renter", async () => {
-      const result = await contract.rentVideo(
-        accounts[0],
-        `https://foo.com/video/a1.json`
-      );
+      const result = await contract.rentVideo(`https://foo.com/video/a1.json`);
       const event = result.logs[0].args;
       assert.equal(event.tokenId.toNumber(), 1, "id is correct");
       assert.equal(event.to, accounts[0], "to is correct");
