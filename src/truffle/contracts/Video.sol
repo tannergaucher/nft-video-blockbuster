@@ -11,9 +11,11 @@ contract Video is ERC721URIStorage {
      constructor() ERC721("Video", "BVT") {
      }
 
+     // address should not be a param.  renter should be msg.sender
+     // second param should just be video id.
+
      function rentVideo(address renter, string memory tokenURI) public returns (uint256) {
           _tokenIds.increment();
-
           uint256 newItemId = _tokenIds.current();
           _mint(renter, newItemId);
           _setTokenURI(newItemId, tokenURI);
@@ -21,5 +23,3 @@ contract Video is ERC721URIStorage {
           return newItemId;
      }
 }
-
-

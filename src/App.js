@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+import Video from "./truffle/build/contracts/Video.json";
+
 const Web3 = require("web3");
 
 export default function App() {
@@ -25,18 +27,51 @@ export default function App() {
 
   if (loadingWeb3) return `Loading web 3`;
 
-  return <>{isWeb3 ? <Web3App /> : <NoWeb3App />}</>;
+  return <>{isWeb3 ? <Web3App /> : <NoWeb3 />}</>;
 }
 
 function Web3App() {
+  const [account, setAccount] = useState();
+  const [contract, setContract] = useState();
+
+  useEffect(() => {
+    async function getAccount() {
+      const accounts = await window.web3.eth.getAccounts();
+      setAccount(accounts[0]);
+    }
+
+    getAccount();
+  }, []);
+
+  useEffect(() => {
+    async function getContract() {
+      const networkId = await window.web3.eth.net.getId();
+      const networkData = Video.networks[networkId];
+
+      if (networkData) {
+        const abi = Video.abi;
+        const address = networkData.address;
+        const myContract = new window.web3.eth.Contract(abi, address);
+        setContract(myContract);
+      } else {
+        window.alert("Smart contract not deployed to detected network");
+      }
+    }
+
+    getContract();
+  }, []);
+
+  console.log(contract);
+
   return (
     <>
+      {account && `Account: ${account}`}
       <h1>Web 3 blockbuster app</h1>
     </>
   );
 }
 
-function NoWeb3App() {
+function NoWeb3() {
   return (
     <>
       <h1>
