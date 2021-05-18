@@ -1,13 +1,48 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 
-function App() {
+const Web3 = require("web3");
+
+export default function App() {
+  const [loadingWeb3, setLoadingWeb3] = useState(true);
+  const [isWeb3, setIsWeb3] = useState(null);
+
+  const getEthEnabled = async () => {
+    if (window.ethereum) {
+      await window.ethereum.send("eth_requestAccounts");
+      window.web3 = new Web3(window.ethereum);
+      setIsWeb3(true);
+      setLoadingWeb3(false);
+      return;
+    }
+    setIsWeb3(false);
+    setLoadingWeb3(false);
+  };
+
+  useEffect(() => {
+    getEthEnabled();
+  }, []);
+
+  if (loadingWeb3) return `Loading web 3`;
+
+  return <>{isWeb3 ? <Web3App /> : <NoWeb3App />}</>;
+}
+
+function Web3App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="App-logo">NFT Blockbuster Video App</h1>
-      </header>
-    </div>
+    <>
+      <h1>Web 3 blockbuster app</h1>
+    </>
   );
 }
 
-export default App;
+function NoWeb3App() {
+  return (
+    <>
+      <h1>
+        No web 3 instance provided. Please use something like metamask to view
+        this app.
+      </h1>
+    </>
+  );
+}
