@@ -51,8 +51,11 @@ function Web3App() {
       if (networkData) {
         const abi = Video.abi;
         const address = networkData.address;
-        const myContract = new window.web3.eth.Contract(abi, address);
+        const myContract = await new window.web3.eth.Contract(abi, address);
         setContract(myContract);
+        const tokenID = 1;
+        const myTokenURI = await myContract.methods.tokenURI(tokenID).call();
+        console.log(myTokenURI);
       } else {
         window.alert("Smart contract not deployed to detected network");
       }
