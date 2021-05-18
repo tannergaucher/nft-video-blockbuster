@@ -33,4 +33,21 @@ contract("Video", (accounts) => {
       assert.equal(symbol, "BVT");
     });
   });
+
+  describe("minting", () => {
+    it("rents a video to renter", async () => {
+      const result = await contract.rentVideo(
+        accounts[0],
+        `https://foo.com/video/a1.json`
+      );
+      const event = result.logs[0].args;
+      assert.equal(event.tokenId.toNumber(), 1, "id is correct");
+      assert.equal(event.to, accounts[0], "to is correct");
+      assert.equal(
+        event.from,
+        "0x0000000000000000000000000000000000000000",
+        "from is correct"
+      );
+    });
+  });
 });
